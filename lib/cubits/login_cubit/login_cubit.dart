@@ -8,7 +8,6 @@ import 'login_states.dart';
 class LoginCubit extends Cubit<LoginStates> {
   LoginCubit() : super(LoginInitialState());
 
-  static LoginCubit get(context) => BlocProvider.of(context);
 
   Future<void> userLogin({
     required email,
@@ -20,10 +19,8 @@ class LoginCubit extends Cubit<LoginStates> {
       'email': email,
       'password': password,
     }).then((value) {
-      print(value.data);
       emit(LoginSuccessState());
     }).catchError((error) {
-      print(error.toString());
       emit(LoginErrorState(error.toString()));
     });
   }

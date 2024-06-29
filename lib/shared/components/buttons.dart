@@ -5,15 +5,20 @@ Widget defaultTextButton({
   required String text,
 }) =>
     TextButton(
-      onPressed: function1(),
-      child: Text(text.toUpperCase(),),
+      onPressed: () {
+        function1();
+      },
+      child: Text(
+        text.toUpperCase(),
+      ),
     );
+
 void navigateTo(context, widget) => Navigator.push(
-  context,
-  MaterialPageRoute(
-    builder: (context) => widget,
-  ),
-);
+      context,
+      MaterialPageRoute(
+        builder: (context) => widget,
+      ),
+    );
 
 Widget defaultButton({
   double height = 50,
