@@ -175,7 +175,7 @@ class RegisterScreen extends StatelessWidget {
                               duration: const Duration(milliseconds: 2000),
                               child: defaultTextButton(
                                 function1: () {
-                                  context.go('/');
+                                  context.go('/login');
                                 },
                                 text: "Already have an account? Sign in",
                               ),

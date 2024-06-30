@@ -42,6 +42,7 @@ dependencies:
   conditional_builder_null_safety: ^0.0.6
   go_router: ^14.2.0
   shared_preferences: ^2.2.3
+  meta: ^1.12.0
 
 dev_dependencies:
   flutter_test:

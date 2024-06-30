@@ -1,18 +1,20 @@
 import 'package:go_router/go_router.dart';
 import 'package:tour_valve/views/home_screen.dart';
 import 'package:tour_valve/views/login_screen.dart';
+import 'package:tour_valve/views/splash_screen.dart';
 
 import '../views/register_screen.dart';
 
 final appRouter = GoRouter(
   routes: [
+    GoRoute(path: '/', builder: (context, state) => const SplashScreen()),
     GoRoute(
-      path: '/',
+      path: '/login',
       builder: (context, state) => LoginScreen(),
     ),
     GoRoute(
       path: '/register',
-      builder: (context, state) =>  RegisterScreen(),
+      builder: (context, state) => RegisterScreen(),
     ),
     GoRoute(
       path: '/home',
