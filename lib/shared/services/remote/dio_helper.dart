@@ -23,11 +23,21 @@ class DioHelper {
     return await dio.get(url, queryParameters: query);
   }
 
+  static Future<Null> signOut(
+      {required String? token, required String url})  async {
+    dio.options.headers["Authorization"] = "Bearer $token";
+    await dio.post(url , options: Options(responseType: ResponseType.plain));
+  }
+
   static Future<Response> postData({
     required String url,
     Map<String, dynamic>? query,
     required Map<String, dynamic> data,
+    String? token,
   }) async {
+    if (token != null) {
+      dio.options.headers["Authorization"] = "Bearer $token";
+    }
     FormData formData = FormData.fromMap(data);
     return await dio.post(
       url,

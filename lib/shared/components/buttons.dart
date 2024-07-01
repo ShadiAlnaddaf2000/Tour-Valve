@@ -24,12 +24,12 @@ Widget defaultButton({
   double height = 50,
   required Color background,
   required String text,
-  required Function function,
+  required void Function()? onPressed,
   FormFieldValidator? validate,
   bool isUpperCase = true,
 }) =>
     TextButton(
-      onPressed: function(),
+      onPressed: onPressed,
       child: Container(
         height: height,
         decoration: BoxDecoration(

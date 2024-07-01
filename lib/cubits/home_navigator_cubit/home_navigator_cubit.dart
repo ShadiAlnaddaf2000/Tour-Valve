@@ -6,5 +6,7 @@ part 'home_navigator_state.dart';
 class HomeNavigationCubit extends Cubit<HomeNavigationState> {
   HomeNavigationCubit() : super(HomeNavigationState(0));
 
-  void setPage(int index) => emit(HomeNavigationState(index));
+  void setPage(int index) {
+    emit(HomeNavigationState(index));
+  }
 }
