@@ -3,6 +3,7 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:toast/toast.dart';
 import 'package:tour_valve/shared/components/shader_mask.dart';
 
 import '../cubits/register_cubit/register_cubit.dart';
@@ -22,10 +23,14 @@ class RegisterScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ToastContext().init(context);
     return BlocConsumer<RegisterCubit, RegisterState>(
         listener: (context, state) {
       if (state is RegisterSuccessState) {
         context.go('/home');
+      } else if (state is RegisterErrorState) {
+        Toast.show('Something went wrong',
+            duration: Toast.lengthShort, gravity: Toast.bottom);
       }
     }, builder: (context, state) {
       return SafeArea(
@@ -164,7 +169,8 @@ class RegisterScreen extends StatelessWidget {
                             ),
                             ConditionalBuilder(
                               condition: state is! RegisterLoadingState,
-                              builder: (context) => buildRegisterButton(context),
+                              builder: (context) =>
+                                  buildRegisterButton(context),
                               fallback: (context) => const Center(
                                   child: CircularProgressIndicator()),
                             ),
@@ -196,34 +202,30 @@ class RegisterScreen extends StatelessWidget {
 
   Container buildRegisterButton(BuildContext context) {
     return Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30.0),
-                                color: const Color.fromARGB(255, 7, 185, 255),
-                              ),
-                              child: MaterialButton(
-                                onPressed: () async {
-                                  if (formKey.currentState!.validate()) {
-                                    BlocProvider.of<RegisterCubit>(context)
-                                        .userRegister(
-                                            email: emailController.text,
-                                            password: passwordController.text,
-                                            address: addressController.text,
-                                            lastname: lastNameController.text,
-                                            firstname:
-                                                firstNameController.text,
-                                            confirmedPassword:
-                                                confirmPasswordController
-                                                    .text);
-                                  }
-                                },
-                                child: const Text(
-                                  'REG',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            );
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30.0),
+        color: const Color.fromARGB(255, 7, 185, 255),
+      ),
+      child: MaterialButton(
+        onPressed: () async {
+          if (formKey.currentState!.validate()) {
+            BlocProvider.of<RegisterCubit>(context).userRegister(
+                email: emailController.text,
+                password: passwordController.text,
+                address: addressController.text,
+                lastname: lastNameController.text,
+                firstname: firstNameController.text,
+                confirmedPassword: confirmPasswordController.text);
+          }
+        },
+        child: const Text(
+          'REG',
+          style: TextStyle(
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
   }
 }
