@@ -6,6 +6,7 @@ class DioHelper {
   static init() {
     dio = Dio(
       BaseOptions(
+        connectTimeout: const Duration(seconds: 1),
         baseUrl: 'http://192.168.1.17:8000/api/',
         receiveDataWhenStatusError: true,
         headers: {
@@ -24,9 +25,9 @@ class DioHelper {
   }
 
   static Future<Null> signOut(
-      {required String? token, required String url})  async {
+      {required String? token, required String url}) async {
     dio.options.headers["Authorization"] = "Bearer $token";
-    await dio.post(url , options: Options(responseType: ResponseType.plain));
+    await dio.post(url, options: Options(responseType: ResponseType.plain));
   }
 
   static Future<Response> postData({
