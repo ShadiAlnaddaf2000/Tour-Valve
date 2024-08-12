@@ -1,3 +1,5 @@
-const LOGIN = 'auth/login';
-const REGISTER = 'auth/register';
-const LOGOUT = 'auth/logout';
+class Urls {
+  static const LOGIN = 'auth/login';
+  static const REGISTER = 'auth/register';
+  static const LOGOUT = 'auth/logout';
+}

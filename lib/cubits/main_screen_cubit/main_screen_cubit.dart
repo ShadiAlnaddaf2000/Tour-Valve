@@ -16,20 +16,15 @@ class MainScreenCubit extends Cubit<MainScreenState> {
   void submitHomePage() {
     emit(MainScreenLoadingState());
 
-    DioHelper.getData(
-        url: '', query: {}
-    ).then((onValue) {
-
+    DioHelper.getData(url: 'country/getAllCountries', query: {})
+        .then((onValue) {
       //allCountriesModel=AllCountriesModel.fromJson()
       //items=allCountriesModel.result.country;
       emit(MainScreenSuccessState());
-    }
-
-    ).catchError((error) {
+    }).catchError((error) {
       print('the error is=${error.toString()}');
     }).catchError((error) {
       emit(MainScreenErrorState(error.toString()));
     });
   }
 }
-

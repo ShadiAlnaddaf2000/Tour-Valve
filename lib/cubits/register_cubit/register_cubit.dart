@@ -18,7 +18,7 @@ class RegisterCubit extends Cubit<RegisterState> {
     required String confirmedPassword,
   }) {
     emit(RegisterLoadingState());
-    DioHelper.postData(url: REGISTER, data: {
+    DioHelper.postData(url: Urls.REGISTER, data: {
       'first_name': firstname,
       'last_name': lastname,
       'email': email,

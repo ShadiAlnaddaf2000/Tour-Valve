@@ -6,8 +6,8 @@ class DioHelper {
   static init() {
     dio = Dio(
       BaseOptions(
-        connectTimeout: const Duration(seconds: 1),
-        baseUrl: 'http://192.168.1.17:8000/api/',
+        // connectTimeout: const Duration(seconds: 1),
+        baseUrl: 'http://192.168.248.129:8000/api/',
         receiveDataWhenStatusError: true,
         headers: {
           'Content-Type': 'multipart/form-data',

@@ -14,8 +14,7 @@ class SettingsCubit extends Cubit<SettingsState> {
   Future<void> signOut() async {
     emit(SignOutLoading());
     final token = CacheHelper.getString('token');
-    DioHelper.signOut(token: token, url: LOGOUT)
-        .then((value) {
+    DioHelper.signOut(token: token, url: Urls.LOGOUT).then((value) {
       CacheHelper.sharedPreferences.clear();
       emit(SignOutSuccess());
     }).catchError((error) {
