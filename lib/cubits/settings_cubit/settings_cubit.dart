@@ -1,6 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:tour_valve/shared/services/remote/dio_exception.dart';
 import 'package:tour_valve/shared/services/remote/dio_helper.dart';
 import 'package:tour_valve/shared/services/storage/cache_helper.dart';
 

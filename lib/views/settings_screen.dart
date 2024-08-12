@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:toast/toast.dart';
 import 'package:tour_valve/cubits/settings_cubit/settings_cubit.dart';
 import 'package:tour_valve/shared/components/buttons.dart';
-import 'package:tour_valve/shared/services/storage/cache_helper.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
