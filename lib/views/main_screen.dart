@@ -1,57 +1,129 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../cubits/main_screen_cubit/main_screen_cubit.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            buildHeader(),
-            const SizedBox(height: 16),
-            buildSearchBox(),
-            const SizedBox(height: 32),
-            buildSectionTitle('popular places'),
-            const SizedBox(height: 16),
-            buildHorizontalList([
-              DestinationCard(
-                imagePath: 'assets/images/1.jpg',
-                location: 'فرنسا',
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildHeader(),
+              const SizedBox(height: 16),
+              buildSearchBox(),
+              const SizedBox(height: 32),
+              buildSectionTitle('Our Tour'),
+              BlocBuilder<TripCubit, MainScreenState>(
+                builder: (context, state) {
+                  if (state is TripInitialState) {
+                    BlocProvider.of<TripCubit>(context).submitTrip();
+                  }
+                  if (state is TripLoadingState) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (state is TripSuccessState) {
+                    return buildHorizontalList(state.trip.map(
+                      (e) {
+                        return TripCard(
+                          imagePath: e.imgs!.first,
+                          tripName: e.tripName ?? '',
+                          startDate: 'from ${e.tripName}',
+                          endDate: 'to ${e.endingDate}',
+                          cost: '${e.cost}',
+                        );
+                      },
+                    ).toList());
+                  }
+
+                  if (state is CountryErrorState) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        BlocProvider.of<CountryCubit>(context).submitCountry();
+                      },
+                      child: const Text('re'),
+                    );
+                  }
+                  return const SizedBox();
+                },
               ),
-              DestinationCard(
-                imagePath: 'assets/images/1.jpg',
-                location: 'فرنسا',
+              const SizedBox(
+                height: 16,
               ),
-              DestinationCard(
-                imagePath: 'assets/images/2.jpg',
-                location: 'سويسرا',
+              buildSectionTitle('popular places'),
+              const SizedBox(height: 16),
+              BlocBuilder<CountryCubit, MainScreenState>(
+                builder: (context, state) {
+                  if (state is CountryInitialState) {
+                    BlocProvider.of<CountryCubit>(context).submitCountry();
+                  }
+                  if (state is CountryLoadingState) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (state is CountrySuccessState) {
+                    return buildHorizontalList(state.cities.map(
+                      (e) {
+                        return DestinationCard(
+                          imagePath: e.imgs!.first,
+                          location: e.name ?? '',
+                        );
+                      },
+                    ).toList());
+                  }
+
+                  if (state is CountryErrorState) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        BlocProvider.of<CountryCubit>(context).submitCountry();
+                      },
+                      child: const Text('re'),
+                    );
+                  }
+                  return const SizedBox();
+                },
               ),
-            ]),
-            const SizedBox(height: 32),
-            buildSectionTitle('popular hotels'),
-            const SizedBox(height: 16),
-            buildHorizontalList([
-              HotelCard(
-                imagePath: 'assets/images/3.jpg',
-                hotelName: 'فندق الكونكورد',
-                price: '400\$',
+              const SizedBox(height: 32),
+              buildSectionTitle('popular hotels'),
+              const SizedBox(height: 16),
+              BlocBuilder<HotelCubit, MainScreenState>(
+                builder: (context, state) {
+                  if (state is HotelInitialState) {
+                    BlocProvider.of<HotelCubit>(context).submitHotel();
+                  }
+                  if (state is HotelLoadingState) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (state is HotelSuccessState) {
+                    return buildHorizontalList(state.hotel.map(
+                      (e) {
+                        return HotelCard(
+                          imagePath: e.imgs!.first,
+                          hotelName: e.name!,
+                          price: e.cityName!,
+                        );
+                      },
+                    ).toList());
+                  }
+
+                  if (state is HotelErrorState) {
+                    return ElevatedButton(
+                      onPressed: () {
+                        BlocProvider.of<HotelCubit>(context).submitHotel();
+                      },
+                      child: const Text('re'),
+                    );
+                  }
+                  return const SizedBox();
+                },
               ),
-              HotelCard(
-                imagePath: 'assets/images/4.jpg',
-                hotelName: 'فندق الريتز',
-                price: '500\$',
-              ),
-              HotelCard(
-                imagePath: 'assets/images/4.jpg',
-                hotelName: 'فندق الريتز',
-                price: '500\$',
-              ),
-            ]),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -73,7 +145,7 @@ class MainScreen extends StatelessWidget {
 
   Widget buildSearchBox() {
     return Center(
-      child: Container(
+      child: SizedBox(
         width: 286,
         height: 49,
         child: TextField(
@@ -108,7 +180,7 @@ class MainScreen extends StatelessWidget {
   }
 
   Widget buildHorizontalList(List<Widget> cards) {
-    return Container(
+    return SizedBox(
       height: 200,
       child: ListView(
         scrollDirection: Axis.horizontal,
@@ -119,6 +191,8 @@ class MainScreen extends StatelessWidget {
 }
 
 class FavoritesPage extends StatelessWidget {
+  const FavoritesPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Center(
@@ -127,25 +201,17 @@ class FavoritesPage extends StatelessWidget {
   }
 }
 
-class ProfilePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Profile Page'),
-    );
-  }
-}
-
 class DestinationCard extends StatelessWidget {
   final String imagePath;
   final String location;
 
-  DestinationCard({required this.imagePath, required this.location});
+  const DestinationCard(
+      {super.key, required this.imagePath, required this.location});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Container(
+      child: SizedBox(
         width: 150,
         height: 200,
         child: Column(
@@ -155,7 +221,7 @@ class DestinationCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(4)),
-                child: Image.asset(
+                child: Image.network(
                   imagePath,
                   width: double.infinity,
                   height: double.infinity,
@@ -182,13 +248,16 @@ class HotelCard extends StatelessWidget {
   final String hotelName;
   final String price;
 
-  HotelCard(
-      {required this.imagePath, required this.hotelName, required this.price});
+  const HotelCard(
+      {super.key,
+      required this.imagePath,
+      required this.hotelName,
+      required this.price});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Container(
+      child: SizedBox(
         width: 150,
         height: 200,
         child: Column(
@@ -198,7 +267,7 @@ class HotelCard extends StatelessWidget {
               child: ClipRRect(
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(4)),
-                child: Image.asset(
+                child: Image.network(
                   imagePath,
                   width: double.infinity,
                   height: double.infinity,
@@ -219,6 +288,83 @@ class HotelCard extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(price),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TripCard extends StatelessWidget {
+  final String imagePath;
+  final String tripName;
+  final String startDate;
+  final String endDate;
+  final String cost;
+
+  const TripCard(
+      {super.key,
+      required this.imagePath,
+      required this.tripName,
+      required this.startDate,
+      required this.endDate,
+      required this.cost});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: SizedBox(
+        height: 1000,
+        width: 200,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(4)),
+                child: Image.network(
+                  imagePath,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Text(
+                tripName,
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Text(
+                'from $startDate',
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Text(
+                'to $endDate',
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Text(cost),
             ),
           ],
         ),

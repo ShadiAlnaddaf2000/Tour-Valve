@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:tour_valve/shared/services/remote/end_points.dart';
+import 'package:tour_valve/shared/services/storage/cache_helper.dart';
 
 class DioHelper {
   static late Dio dio;
@@ -7,7 +9,7 @@ class DioHelper {
     dio = Dio(
       BaseOptions(
         // connectTimeout: const Duration(seconds: 1),
-        baseUrl: 'http://192.168.248.129:8000/api/',
+        baseUrl: Urls.domain,
         receiveDataWhenStatusError: true,
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -19,8 +21,11 @@ class DioHelper {
 
   static Future<Response> getData({
     required String url,
-    required Map<String, dynamic> query,
+    Map<String, dynamic> query = const {},
   }) async {
+    var token = CacheHelper.getString('token');
+    dio.options.headers["Authorization"] = "Bearer $token";
+
     return await dio.get(url, queryParameters: query);
   }
 

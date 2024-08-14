@@ -1,13 +1,13 @@
 import '../shared/services/remote/end_points.dart';
 
-class AllCountriesModel {
+class AllHotelsModel {
   String? code;
   String? message;
   Result? result;
 
-  AllCountriesModel({this.code, this.message, this.result});
+  AllHotelsModel({this.code, this.message, this.result});
 
-  AllCountriesModel.fromJson(Map<String, dynamic> json) {
+  AllHotelsModel.fromJson(Map<String, dynamic> json) {
     if (json["code"] is String) {
       code = json["code"];
     }
@@ -31,48 +31,58 @@ class AllCountriesModel {
 }
 
 class Result {
-  List<Country>? country;
+  List<Hotel>? hotels;
 
-  Result({this.country});
+  Result({this.hotels});
 
   Result.fromJson(Map<String, dynamic> json) {
-    if (json["country"] is List) {
-      country = json["country"] == null
+    if (json["hotels"] is List) {
+      hotels = json["hotels"] == null
           ? null
-          : (json["country"] as List).map((e) => Country.fromJson(e)).toList();
+          : (json["hotels"] as List).map((e) => Hotel.fromJson(e)).toList();
     }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    if (country != null) {
-      data["country"] = country?.map((e) => e.toJson()).toList();
+    if (hotels != null) {
+      data["hotels"] = hotels?.map((e) => e.toJson()).toList();
     }
     return data;
   }
 }
 
-class Country {
+class Hotel {
   String? name;
   String? description;
+  String? availability;
+  String? cityName;
+  String? countryName;
   List<String>? imgs;
 
-  Country({this.name, this.description, this.imgs});
+  Hotel({this.name, this.description, this.availability, this.cityName, this.countryName, this.imgs});
 
-  Country.fromJson(Map<String, dynamic> json) {
+  Hotel.fromJson(Map<String, dynamic> json) {
     if (json["name"] is String) {
       name = json["name"];
     }
     if (json["description"] is String) {
       description = json["description"];
     }
+    if (json["availability"] is String) {
+      availability = json["availability"];
+    }
+    if (json["city_name"] is String) {
+      cityName = json["city_name"];
+    }
+    if (json["country_name"] is String) {
+      countryName = json["country_name"];
+    }
     if (json["imgs"] is List) {
       imgs = json["imgs"] == null ? null : List<String>.from(json["imgs"]);
       imgs = imgs?.map(
-        (e) {
+            (e) {
           print('${Urls.domain}$e');
-          
-          
           return '${Urls.domain}$e';
         },
       ).toList();
@@ -83,6 +93,9 @@ class Country {
     final Map<String, dynamic> data = <String, dynamic>{};
     data["name"] = name;
     data["description"] = description;
+    data["availability"] = availability;
+    data["city_name"] = cityName;
+    data["country_name"] = countryName;
     if (imgs != null) {
       data["imgs"] = imgs;
     }

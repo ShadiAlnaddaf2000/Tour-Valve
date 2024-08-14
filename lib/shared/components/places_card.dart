@@ -36,7 +36,7 @@ Widget placesCardItem(item, context, MainScreenState state) => Card(
 
 Widget placesCardBuilder(items, context, MainScreenState state) =>
     ConditionalBuilder(
-        condition: state is! MainScreenLoadingState && items != null,
+        condition: state is! CountryLoadingState && items != null,
         builder: (context) => ListView.builder(
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
