@@ -41,11 +41,13 @@ class HotelCubit extends Cubit<MainScreenState> {
     emit(HotelLoadingState());
     DioHelper.getData(url: Urls.getHotel).then((onValue) {
       response = AllHotelsModel.fromJson(onValue.data);
+      print('this is response ' + response.toString());
       emit(HotelSuccessState(hotel: response?.result?.hotels ?? []));
     }).catchError((onError) {
       print(onError);
       emit(HotelErrorState(onError.toString()));
     });
+  print(response);
   }
 }
 

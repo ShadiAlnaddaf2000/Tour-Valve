@@ -38,10 +38,6 @@ class HotelErrorState extends MainScreenState {
   HotelErrorState(this.error);
 }
 
-class InitStateOfPage extends MainScreenState {
-  final country = CountryInitialState();
-  final hotel = HotelInitialState();
-}
 
 class TripInitialState extends MainScreenState {}
 
@@ -49,7 +45,6 @@ class TripLoadingState extends MainScreenState {}
 
 class TripSuccessState extends MainScreenState {
   final List<Trip> trip;
-
   TripSuccessState({required this.trip});
 }
 

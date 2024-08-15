@@ -20,7 +20,7 @@ class HomeScreen extends StatelessWidget {
             const MainScreen(),
             const FavoritesScreen(),
             const SettingsScreen(),
-            const UserProfileScreen(),
+             UserProfileScreen(),
           ][state.currentPageIndex];
         },
       ),

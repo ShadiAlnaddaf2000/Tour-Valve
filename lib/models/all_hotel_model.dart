@@ -28,6 +28,11 @@ class AllHotelsModel {
     }
     return data;
   }
+
+  @override
+  String toString() {
+    return 'AllHotelsModel{code: $code, message: $message, result: $result}';
+  }
 }
 
 class Result {
@@ -49,6 +54,11 @@ class Result {
       data["hotels"] = hotels?.map((e) => e.toJson()).toList();
     }
     return data;
+  }
+
+  @override
+  String toString() {
+    return 'Result{hotels: $hotels}';
   }
 }
 
@@ -100,5 +110,10 @@ class Hotel {
       data["imgs"] = imgs;
     }
     return data;
+  }
+
+  @override
+  String toString() {
+    return 'Hotel{name: $name, description: $description, availability: $availability, cityName: $cityName, countryName: $countryName, imgs: $imgs}';
   }
 }
