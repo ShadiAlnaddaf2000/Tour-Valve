@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../cubits/main_screen_cubit/main_screen_cubit.dart';
 
@@ -31,12 +32,17 @@ class MainScreen extends StatelessWidget {
                   if (state is TripSuccessState) {
                     return buildHorizontalList(state.trip.map(
                       (e) {
-                        return TripCard(
-                          imagePath: e.imgs!.first,
-                          tripName: e.tripName ?? '',
-                          startDate: 'from ${e.tripName}',
-                          endDate: 'to ${e.endingDate}',
-                          cost: '${e.cost}',
+                        return InkWell(
+                          onTap: (){
+                            context.push('/tripDetails',extra: e);
+                          },
+                          child: TripCard(
+                            imagePath: e.imgs!.first,
+                            tripName: e.tripName ?? '',
+                            startDate: 'from ${e.tripName}',
+                            endDate: 'to ${e.endingDate}',
+                            cost: '${e.cost}',
+                          ),
                         );
                       },
                     ).toList());
