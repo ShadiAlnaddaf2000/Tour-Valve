@@ -53,6 +53,7 @@ class Result {
 }
 
 class Trip {
+  int? id;
   String? tripName;
   String? description;
   int? cost;
@@ -63,6 +64,7 @@ class Trip {
   List<String>? imgs;
 
   Trip({
+    this.id,
     this.tripName,
     this.description,
     this.cost,
@@ -74,6 +76,9 @@ class Trip {
   });
 
   Trip.fromJson(Map<String, dynamic> json) {
+    if (json["id"] is int) {
+      id = json["id"];
+    }
     if (json["trip_name"] is String) {
       tripName = json["trip_name"];
     }
@@ -108,6 +113,7 @@ class Trip {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
+    data["id"] = id;
     data["trip_name"] = tripName;
     data["description"] = description;
     data["cost"] = cost;

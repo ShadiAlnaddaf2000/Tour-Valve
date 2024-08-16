@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tour_valve/cubits/user_profile_cubit/user_profile_cubit.dart';
 
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
@@ -8,11 +10,6 @@ class UserProfileScreen extends StatelessWidget {
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
     double p = MediaQuery.of(context).size.width / 20;
-
-    final String firstName = 'homam';
-    final String lastName = 'nasser';
-    final String email = 'homam.nase.com';
-    final String address = 'damascus';
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -24,8 +21,8 @@ class UserProfileScreen extends StatelessWidget {
               Container(
                 width: w,
                 height: h - (h / 4),
-                decoration: BoxDecoration(
-                  color: Colors.black,
+                decoration: const BoxDecoration(
+                  color: Colors.black87,
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(50),
                     topLeft: Radius.circular(50),
@@ -34,121 +31,150 @@ class UserProfileScreen extends StatelessWidget {
               ),
             ],
           ),
-          SingleChildScrollView(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Stack(
-                      children: [
-                        Padding(
-                          padding: EdgeInsets.only(top: h / 9),
-                          child: CircleAvatar(
-                            radius: 70,
-                            backgroundImage: AssetImage('assets/images/1.jpg'),
+          BlocBuilder<UserProfileCubit, UserProfileState>(
+            builder: (context, state) {
+              if (state is UserProfileInitialState) {
+                BlocProvider.of<UserProfileCubit>(context).submitUserProfile();
+              }
+              if (state is UserProfileLoadingState) {
+                return const CircularProgressIndicator();
+              }
+              if (state is UserProfileSuccessState) {
+                return SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Stack(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: h / 9),
+                                child: const CircleAvatar(
+                                  radius: 70,
+                                  backgroundImage:
+                                      AssetImage('assets/images/logo.png'),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: h / 50),
+                      defaultTitle(
+                        title: '${state.user.firstName} ${state.user.lastName}',
+                        color: Colors.white,
+                      ),
+                      SizedBox(height: h / 20),
+                      Padding(
+                        padding: EdgeInsets.all(p),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            myIcon(icon: Icons.person),
+                            const SizedBox(width: 5),
+                            defaultText(
+                              text: 'First Name:',
+                              color: const Color.fromRGBO(1, 195, 175, 1),
+                            ),
+                            const SizedBox(width: 10),
+                            defaultText(
+                                text: state.user.firstName,
+                                color: Colors.white),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(p),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            myIcon(icon: Icons.person),
+                            const SizedBox(width: 5),
+                            defaultText(
+                              text: 'Last Name:',
+                              color: const Color.fromRGBO(1, 195, 175, 1),
+                            ),
+                            const SizedBox(width: 10),
+                            defaultText(
+                                text: state.user.lastName, color: Colors.white),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(p),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            myIcon(icon: Icons.email),
+                            const SizedBox(width: 5),
+                            defaultText(
+                              text: 'Email:',
+                              color: const Color.fromRGBO(1, 195, 175, 1),
+                            ),
+                            const SizedBox(width: 10),
+                            defaultText(
+                                text: state.user.email, color: Colors.white),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(p),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            myIcon(icon: Icons.location_city),
+                            const SizedBox(width: 5),
+                            defaultText(
+                              text: 'Address:',
+                              color: const Color.fromRGBO(1, 195, 175, 1),
+                            ),
+                            const SizedBox(width: 10),
+                            defaultText(
+                                text: state.user.address, color: Colors.white),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(p),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            myIcon(icon: Icons.date_range),
+                            const SizedBox(width: 5),
+                            defaultText(
+                              text: 'Created At:',
+                              color: const Color.fromRGBO(1, 195, 175, 1),
+                            ),
+                            const SizedBox(width: 10),
+                            defaultText(
+                                text: state.user.createdAt.substring(0, 10),
+                                color: Colors.white),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.all(p),
+                        child: InkWell(
+                          onTap: () {
+                            print(state.user.wallet);
+                          },
+                          child: walletWidget(
+                            amount: '${state.user.wallet}',
+                            currency: 'SYR',
+                            color: const Color.fromRGBO(1, 195, 175, 1),
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-                SizedBox(height: h / 50),
-                defaultTitle(
-                  title: '$firstName $lastName',
-                  color: Colors.white,
-                ),
-                SizedBox(height: h / 20),
-                Padding(
-                  padding: EdgeInsets.all(p),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      myIcon(icon: Icons.person),
-                      SizedBox(width: 5),
-                      defaultText(
-                        text: 'First Name:',
-                        color: Color.fromRGBO(1, 195, 175, 1),
                       ),
-                      SizedBox(width: 10),
-                      defaultText(text: '$firstName', color: Colors.white),
                     ],
                   ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(p),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      myIcon(icon: Icons.person),
-                      SizedBox(width: 5),
-                      defaultText(
-                        text: 'Last Name:',
-                        color: Color.fromRGBO(1, 195, 175, 1),
-                      ),
-                      SizedBox(width: 10),
-                      defaultText(text: '$lastName', color: Colors.white),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(p),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      myIcon(icon: Icons.email),
-                      SizedBox(width: 5),
-                      defaultText(
-                        text: 'Email:',
-                        color: Color.fromRGBO(1, 195, 175, 1),
-                      ),
-                      SizedBox(width: 10),
-                      defaultText(text: email, color: Colors.white),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(p),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      myIcon(icon: Icons.location_city),
-                      SizedBox(width: 5),
-                      defaultText(
-                        text: 'Address:',
-                        color: Color.fromRGBO(1, 195, 175, 1),
-                      ),
-                      SizedBox(width: 10),
-                      defaultText(text: address, color: Colors.white),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(p),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      myIcon(icon: Icons.date_range),
-                      SizedBox(width: 5),
-                      defaultText(
-                        text: 'Created At:',
-                        color: Color.fromRGBO(1, 195, 175, 1),
-                      ),
-                      SizedBox(width: 10),
-                      defaultText(text: 'N/A', color: Colors.white),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(p),
-                  child: walletWidget(
-                    amount: '1000',
-                    currency: 'SYR',
-                    color: Color.fromRGBO(1, 195, 175, 1),
-                  ),
-                ),
-              ],
-            ),
+                );
+              }
+              if (state is UserProfileErrorState) {
+                return const Text('Something went Wrong!');
+              }
+              return const SizedBox();
+            },
           ),
         ],
       ),
@@ -160,10 +186,10 @@ Widget myIcon({
   required IconData icon,
 }) =>
     Padding(
-      padding: EdgeInsets.only(left: 10),
+      padding: const EdgeInsets.only(left: 10),
       child: Icon(
         icon,
-        color: Color.fromRGBO(1, 195, 175, 1),
+        color: const Color.fromRGBO(1, 195, 175, 1),
         size: 18,
       ),
     );
@@ -174,8 +200,8 @@ Widget walletWidget({
   required Color color,
 }) {
   return Container(
-    margin: EdgeInsets.symmetric(vertical: 10),
-    padding: EdgeInsets.all(20),
+    margin: const EdgeInsets.symmetric(vertical: 10),
+    padding: const EdgeInsets.all(20),
     decoration: BoxDecoration(
       color: color,
       borderRadius: BorderRadius.circular(20),
@@ -184,14 +210,14 @@ Widget walletWidget({
           color: Colors.black.withOpacity(0.1),
           spreadRadius: 3,
           blurRadius: 5,
-          offset: Offset(0, 3),
+          offset: const Offset(0, 3),
         ),
       ],
     ),
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Icon(
+        const Icon(
           Icons.account_balance_wallet,
           color: Colors.white,
           size: 40,
@@ -199,7 +225,7 @@ Widget walletWidget({
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Wallet Balance',
               style: TextStyle(
                 color: Colors.white,
@@ -207,10 +233,10 @@ Widget walletWidget({
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             Text(
               '$amount $currency',
-              style: TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -243,8 +269,8 @@ Widget defaultButton({
   required void Function() onPressed,
   required double height,
   Color buttColor = Colors.black12,
-  Color colortext = Colors.black12,
-  double fontsize = 20,
+  Color textColor = Colors.black12,
+  double fontSize = 20,
   FontWeight fontWeight = FontWeight.w300,
   required String text,
 }) =>
@@ -263,8 +289,8 @@ Widget defaultButton({
               text,
               style: TextStyle(
                 fontWeight: fontWeight,
-                color: colortext,
-                fontSize: fontsize,
+                color: textColor,
+                fontSize: fontSize,
               ),
             ),
           ),

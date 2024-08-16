@@ -1,10 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tour_valve/cubits/activities_cubit/activities_cubit.dart';
 import 'package:tour_valve/cubits/home_navigator_cubit/home_navigator_cubit.dart';
 import 'package:tour_valve/cubits/login_cubit/login_cubit.dart';
 import 'package:tour_valve/cubits/register_cubit/register_cubit.dart';
 import 'package:tour_valve/cubits/splash_cubit/splash_cubit.dart';
 import 'package:tour_valve/models/all_trip_model.dart';
+import 'package:tour_valve/views/activities_screen.dart';
 
 import 'package:tour_valve/views/home_screen.dart';
 import 'package:tour_valve/views/login_screen.dart';
@@ -44,25 +46,28 @@ final appRouter = GoRouter(
         child: const HomeScreen(),
       ),
     ),
-    // GoRoute(
-    //
-    //   path: '/tripDetails',
-    //
-    //   builder: (context, state) => BlocProvider(
-    //     create: (context) => TripDetailsCubit(),
-    //     child: const TripDetailsScreen(),
-    //   ),
-    // ),
     GoRoute(
       path: '/tripDetails',
       builder: (context, state) {
-        final tripInfo = state.extra as Trip; // Replace YourDataType with the actual type of e
+        final tripInfo = state.extra
+            as Trip;
         return BlocProvider(
           create: (context) => TripDetailsCubit(tripInfo),
-          child: const TripDetailsScreen(),
+          child: TripDetailsScreen(
+            tripDetails: tripInfo,
+          ),
         );
       },
-    )
-
+    ),
+    GoRoute(
+      path: '/tripActivities',
+      builder: (context, state) {
+        final tripId = state.extra as int;
+        return BlocProvider(
+          create: (context) => TripActivitiesCubit(tripId),
+          child: const ActivitiesScreen(),
+        );
+      },
+    ),
   ],
 );

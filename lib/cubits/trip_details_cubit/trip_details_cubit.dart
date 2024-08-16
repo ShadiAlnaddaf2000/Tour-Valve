@@ -6,10 +6,11 @@ part 'trip_details_state.dart';
 
 class TripDetailsCubit extends Cubit<TripDetailsState> {
   final Trip? trip;
+  static TripDetailsCubit get(context) => BlocProvider.of(context);
 
   TripDetailsCubit(this.trip) : super(TripDetailsInitialState());
 
-  void submitTripDetails() {
-    emit(TripDetailsSuccessState(trip: trip));
+  void showTripActivity() {
+
   }
 }
