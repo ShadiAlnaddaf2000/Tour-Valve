@@ -10,4 +10,6 @@ class Urls {
   static const getTripActivities = '/api/activity/getTripActivity/';
   static const addBook = '/api/booking/addBook';
   static const getFinance = '/api/booking/getUserFinance';
+  static const getMyBooking = '/api/booking/getAllUserBookings';
+  static const deleteBook = '/api/booking/deleteBook/';
 }

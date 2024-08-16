@@ -7,44 +7,45 @@ class UserFinanceScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('User Finance'),
-        backgroundColor: Colors.blue.shade800,
-      ),
-      body: BlocBuilder<UserFinanceCubit, UserFinanceState>(
-        builder: (context, state) {
-          if (state is UserFinanceInitialState) {
-            BlocProvider.of<UserFinanceCubit>(context).submitUserFinance();
-          }
-          if (state is UserFinanceLoadingState) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-          if (state is UserFinanceSuccessState) {
-            print(state.financeTransaction.toString());
-            return buildVerticalList(state.financeTransaction.map((e) {
-              return FinanceCard(
-                chargeValue: '${e.amount}',
-                balanceBefore: '${e.before}',
-                balanceAfter: '${e.after}',
-                chargeType: '${e.type}',
-                transactionDescription: '${e.description}',
-                transactionDate: '${e.date}',
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('User Finance'),
+          backgroundColor: Colors.blue.shade800,
+        ),
+        body: BlocBuilder<UserFinanceCubit, UserFinanceState>(
+          builder: (context, state) {
+            if (state is UserFinanceInitialState) {
+              BlocProvider.of<UserFinanceCubit>(context).submitUserFinance();
+            }
+            if (state is UserFinanceLoadingState) {
+              return const Center(
+                child: CircularProgressIndicator(),
               );
-            }).toList());
-          }
-          if (state is UserFinanceErrorState) {
-            return const Center(
-              child: Text(
-                'Error occurred',
-                style: TextStyle(color: Colors.red),
-              ),
-            );
-          }
-          return const SizedBox();
-        },
+            }
+            if (state is UserFinanceSuccessState) {
+              return buildVerticalList(state.financeTransaction.map((e) {
+                return FinanceCard(
+                  chargeValue: '${e.amount}',
+                  balanceBefore: '${e.before}',
+                  balanceAfter: '${e.after}',
+                  chargeType: '${e.type}',
+                  transactionDescription: '${e.description}',
+                  transactionDate: '${e.date}',
+                );
+              }).toList());
+            }
+            if (state is UserFinanceErrorState) {
+              return const Center(
+                child: Text(
+                  'Error occurred',
+                  style: TextStyle(color: Colors.red),
+                ),
+              );
+            }
+            return const SizedBox();
+          },
+        ),
       ),
     );
   }

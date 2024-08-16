@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tour_valve/cubits/my_booking_cubit/my_booking_cubit.dart';
 import 'package:tour_valve/cubits/user_profile_cubit/user_profile_cubit.dart';
 import 'package:tour_valve/shared/app_routes.dart';
 import 'package:tour_valve/shared/services/remote/dio_helper.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) => UserProfileCubit(),
         ),
+        BlocProvider(create: (BuildContext context) => MyBookingCubit()),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,

@@ -1,8 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:tour_valve/views/favorites_screen.dart';
 import 'package:tour_valve/views/main_screen.dart';
+import 'package:tour_valve/views/my_booking_screen.dart';
 import 'package:tour_valve/views/settings_screen.dart';
 import 'package:tour_valve/views/user_profile_screen.dart';
 
@@ -18,7 +17,7 @@ class HomeScreen extends StatelessWidget {
         builder: (context, state) {
           return <Widget>[
             const MainScreen(),
-            const FavoritesScreen(),
+            const MyBookingScreen(),
             const SettingsScreen(),
             const UserProfileScreen(),
           ][state.currentPageIndex];
@@ -38,8 +37,8 @@ class HomeScreen extends StatelessWidget {
                 label: 'Home',
               ),
               NavigationDestination(
-                icon: Icon(CupertinoIcons.heart_fill),
-                label: 'Favorites',
+                icon: Icon(Icons.mode_of_travel),
+                label: 'My Booking',
               ),
               NavigationDestination(
                 icon: Icon(Icons.settings),
