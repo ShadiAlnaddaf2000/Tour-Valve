@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tour_valve/cubits/user_profile_cubit/user_profile_cubit.dart';
 
 class UserProfileScreen extends StatelessWidget {
@@ -157,7 +158,7 @@ class UserProfileScreen extends StatelessWidget {
                         padding: EdgeInsets.all(p),
                         child: InkWell(
                           onTap: () {
-                            print(state.user.wallet);
+                            context.push('/userFinance');
                           },
                           child: walletWidget(
                             amount: '${state.user.wallet}',

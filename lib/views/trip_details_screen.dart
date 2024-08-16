@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tour_valve/cubits/activities_cubit/activities_cubit.dart';
 import 'package:tour_valve/models/all_trip_model.dart';
 
 import '../cubits/trip_details_cubit/trip_details_cubit.dart';

@@ -1,4 +1,4 @@
-part of 'activities_cubit.dart';
+part of 'trip_activities_cubit.dart';
 
 @immutable
 sealed class TripActivitiesState {}
@@ -23,3 +23,9 @@ final class TripActivitiesErrorState extends TripActivitiesState {
     return error;
   }
 }
+
+final class BookingLoadingState extends TripActivitiesState {}
+
+final class BookingSuccessState extends TripActivitiesState {}
+
+final class BookingErrorState extends TripActivitiesState {}

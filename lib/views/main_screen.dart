@@ -187,7 +187,7 @@ class MainScreen extends StatelessWidget {
 
   Widget buildHorizontalList(List<Widget> cards) {
     return SizedBox(
-      height: 200,
+      height: 250,
       child: ListView(
         scrollDirection: Axis.horizontal,
         children: cards,
@@ -321,7 +321,7 @@ class TripCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: SizedBox(
-        height: 1000,
+        height: 500,
         width: 200,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

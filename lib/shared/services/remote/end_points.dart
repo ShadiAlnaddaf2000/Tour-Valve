@@ -7,5 +7,7 @@ class Urls {
   static const getHotel = '/api/hotel/getAllHotel';
   static const getTrip = '/api/trip/getAllTrips';
   static const getUserProfile = '/api/auth/user-profile';
-  static const getActivities = '/api/activity/getActivity/';
+  static const getTripActivities = '/api/activity/getTripActivity/';
+  static const addBook = '/api/booking/addBook';
+  static const getFinance = '/api/booking/getUserFinance';
 }
