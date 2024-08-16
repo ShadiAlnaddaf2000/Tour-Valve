@@ -8,5 +8,4 @@ class Urls {
   static const getTrip = '/api/trip/getAllTrips';
   static const getUserProfile = '/api/auth/user-profile';
   static const getActivities = '/api/activity/getActivity/';
-
 }

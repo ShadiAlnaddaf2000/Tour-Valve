@@ -13,13 +13,19 @@ class TripActivitiesCubit extends Cubit<TripActivitiesState> {
 
   TripActivitiesCubit(this.tripId) : super(TripActivitiesInitialState());
 
-  void submitActivities() {
+  void submitActivities() async {
     emit(TripActivitiesLoadingState());
-    DioHelper.getData(url: '${Urls.getActivities}$tripId').then((onValue) {
+
+    try {
+      var onValue = await DioHelper.postData(
+        url: '${Urls.getActivities}$tripId',
+      );
+
       response = TripActivitiesModel.fromJson(onValue.data);
+
       emit(TripActivitiesSuccessState(response?.result));
-    }).catchError((onError) {
-      emit(TripActivitiesErrorState(onError));
-    });
+    } catch (e) {
+      emit(TripActivitiesErrorState(e.toString()));
+    }
   }
 }

@@ -7,7 +7,7 @@ class ActivitiesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(builder: (context, state) {
+    return BlocBuilder<TripActivitiesCubit, TripActivitiesState>(builder: (context, state) {
       if (state is TripActivitiesInitialState) {
         BlocProvider.of<TripActivitiesCubit>(context).submitActivities();
       }

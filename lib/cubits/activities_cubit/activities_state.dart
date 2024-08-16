@@ -17,4 +17,9 @@ final class TripActivitiesErrorState extends TripActivitiesState {
   final String error;
 
   TripActivitiesErrorState(this.error);
+
+  @override
+  String toString() {
+    return error;
+  }
 }
