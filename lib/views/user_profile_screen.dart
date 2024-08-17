@@ -6,6 +6,11 @@ import 'package:tour_valve/cubits/user_profile_cubit/user_profile_cubit.dart';
 class UserProfileScreen extends StatelessWidget {
   const UserProfileScreen({super.key});
 
+  Future<void> _refreshUserProfile(BuildContext context) async {
+    // Call the cubit to reload the user profile
+    BlocProvider.of<UserProfileCubit>(context).submitUserProfile();
+  }
+
   @override
   Widget build(BuildContext context) {
     double w = MediaQuery.of(context).size.width;
@@ -38,141 +43,148 @@ class UserProfileScreen extends StatelessWidget {
                 BlocProvider.of<UserProfileCubit>(context).submitUserProfile();
               }
               if (state is UserProfileLoadingState) {
-                return const CircularProgressIndicator();
+                return const Center(child: CircularProgressIndicator());
               }
               if (state is UserProfileSuccessState) {
-                return SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Stack(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(top: h / 9),
-                                child: const CircleAvatar(
-                                  radius: 70,
-                                  backgroundImage:
-                                      AssetImage('assets/images/logo.png'),
+                return RefreshIndicator(
+                  onRefresh: () => _refreshUserProfile(context),
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Stack(
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.only(top: h / 9),
+                                  child: const CircleAvatar(
+                                    radius: 70,
+                                    backgroundImage:
+                                        AssetImage('assets/images/logo.png'),
+                                  ),
                                 ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: h / 50),
+                        defaultTitle(
+                          title:
+                              '${state.user.firstName} ${state.user.lastName}',
+                          color: Colors.white,
+                        ),
+                        SizedBox(height: h / 20),
+                        Padding(
+                          padding: EdgeInsets.all(p),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              myIcon(icon: Icons.person),
+                              const SizedBox(width: 5),
+                              defaultText(
+                                text: 'First Name:',
+                                color: const Color.fromRGBO(1, 195, 175, 1),
                               ),
+                              const SizedBox(width: 10),
+                              defaultText(
+                                  text: state.user.firstName,
+                                  color: Colors.white),
                             ],
                           ),
-                        ],
-                      ),
-                      SizedBox(height: h / 50),
-                      defaultTitle(
-                        title: '${state.user.firstName} ${state.user.lastName}',
-                        color: Colors.white,
-                      ),
-                      SizedBox(height: h / 20),
-                      Padding(
-                        padding: EdgeInsets.all(p),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            myIcon(icon: Icons.person),
-                            const SizedBox(width: 5),
-                            defaultText(
-                              text: 'First Name:',
-                              color: const Color.fromRGBO(1, 195, 175, 1),
-                            ),
-                            const SizedBox(width: 10),
-                            defaultText(
-                                text: state.user.firstName,
-                                color: Colors.white),
-                          ],
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(p),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            myIcon(icon: Icons.person),
-                            const SizedBox(width: 5),
-                            defaultText(
-                              text: 'Last Name:',
-                              color: const Color.fromRGBO(1, 195, 175, 1),
-                            ),
-                            const SizedBox(width: 10),
-                            defaultText(
-                                text: state.user.lastName, color: Colors.white),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(p),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            myIcon(icon: Icons.email),
-                            const SizedBox(width: 5),
-                            defaultText(
-                              text: 'Email:',
-                              color: const Color.fromRGBO(1, 195, 175, 1),
-                            ),
-                            const SizedBox(width: 10),
-                            defaultText(
-                                text: state.user.email, color: Colors.white),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(p),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            myIcon(icon: Icons.location_city),
-                            const SizedBox(width: 5),
-                            defaultText(
-                              text: 'Address:',
-                              color: const Color.fromRGBO(1, 195, 175, 1),
-                            ),
-                            const SizedBox(width: 10),
-                            defaultText(
-                                text: state.user.address, color: Colors.white),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(p),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            myIcon(icon: Icons.date_range),
-                            const SizedBox(width: 5),
-                            defaultText(
-                              text: 'Created At:',
-                              color: const Color.fromRGBO(1, 195, 175, 1),
-                            ),
-                            const SizedBox(width: 10),
-                            defaultText(
-                                text: state.user.createdAt.substring(0, 10),
-                                color: Colors.white),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.all(p),
-                        child: InkWell(
-                          onTap: () {
-                            context.push('/userFinance');
-                          },
-                          child: walletWidget(
-                            amount: '${state.user.wallet}',
-                            currency: 'SYR',
-                            color: const Color.fromRGBO(1, 195, 175, 1),
+                        Padding(
+                          padding: EdgeInsets.all(p),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              myIcon(icon: Icons.person),
+                              const SizedBox(width: 5),
+                              defaultText(
+                                text: 'Last Name:',
+                                color: const Color.fromRGBO(1, 195, 175, 1),
+                              ),
+                              const SizedBox(width: 10),
+                              defaultText(
+                                  text: state.user.lastName,
+                                  color: Colors.white),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
+                        Padding(
+                          padding: EdgeInsets.all(p),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              myIcon(icon: Icons.email),
+                              const SizedBox(width: 5),
+                              defaultText(
+                                text: 'Email:',
+                                color: const Color.fromRGBO(1, 195, 175, 1),
+                              ),
+                              const SizedBox(width: 10),
+                              defaultText(
+                                  text: state.user.email, color: Colors.white),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(p),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              myIcon(icon: Icons.location_city),
+                              const SizedBox(width: 5),
+                              defaultText(
+                                text: 'Address:',
+                                color: const Color.fromRGBO(1, 195, 175, 1),
+                              ),
+                              const SizedBox(width: 10),
+                              defaultText(
+                                  text: state.user.address,
+                                  color: Colors.white),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(p),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              myIcon(icon: Icons.date_range),
+                              const SizedBox(width: 5),
+                              defaultText(
+                                text: 'Created At:',
+                                color: const Color.fromRGBO(1, 195, 175, 1),
+                              ),
+                              const SizedBox(width: 10),
+                              defaultText(
+                                  text: state.user.createdAt.substring(0, 10),
+                                  color: Colors.white),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(p),
+                          child: InkWell(
+                            onTap: () {
+                              context.push('/userFinance');
+                            },
+                            child: walletWidget(
+                              amount: '${state.user.wallet}',
+                              currency: 'SYR',
+                              color: const Color.fromRGBO(1, 195, 175, 1),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               }
               if (state is UserProfileErrorState) {
-                return const Text('Something went Wrong!');
+                return const Center(child: Text('Something went wrong!'));
               }
               return const SizedBox();
             },

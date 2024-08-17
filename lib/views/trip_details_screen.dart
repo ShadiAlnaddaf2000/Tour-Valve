@@ -100,7 +100,9 @@ class TripDetailsScreen extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  SizedBox(height: h / 20),
+                  const SizedBox(
+                    height: 5,
+                  ),
                   defaultTitle(
                     title: "Description:",
                     color: Colors.black,
@@ -114,7 +116,7 @@ class TripDetailsScreen extends StatelessWidget {
                       fontWeight: FontWeight.w400,
                     ),
                   ),
-                  SizedBox(height: h / 15),
+                  const SizedBox(height: 10),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -136,13 +138,13 @@ class TripDetailsScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: h / 40),
+                  const SizedBox(height: 10),
                   walletWidget(
                     amount: '1000',
                     currency: 'SYR',
                     color: MyColors.colorList[1],
                   ),
-                  SizedBox(height: h / 30),
+                  const SizedBox(height: 10),
                   Container(
                     width: double.infinity,
                     padding: EdgeInsets.symmetric(horizontal: p),
@@ -363,152 +365,3 @@ class MyColors {
     Color.fromRGBO(1, 195, 175, 1),
   ];
 }
-// class TripDetailsScreen extends StatelessWidget {
-//   final Trip tripDetails;
-//
-//   const TripDetailsScreen({super.key, required this.tripDetails});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         leading: IconButton(
-//           icon: Icon(Icons.arrow_back),
-//           onPressed: () {
-//             Navigator.of(context).pop();
-//           },
-//         ),
-//         title: Text('Complete Trip'),
-//       ),
-//       body: SafeArea(
-//         child: Padding(
-//           padding: const EdgeInsets.all(16.0),
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.stretch,
-//             children: [
-//               Text(
-//                 '€${tripDetails.cost}',
-//                 style: TextStyle(
-//                   fontSize: 32,
-//                   fontWeight: FontWeight.bold,
-//                   color: Colors.blue,
-//                 ),
-//                 textAlign: TextAlign.center,
-//               ),
-//               SizedBox(height: 8),
-//               CarouselSlider(
-//                 options: CarouselOptions(
-//                     autoPlay: true,
-//                     aspectRatio: 2,
-//                     enlargeCenterPage: true,
-//                     autoPlayInterval: const Duration(milliseconds: 1500)),
-//                 items: tripDetails.imgs
-//                     ?.map((item) => Container(
-//                   child: Center(
-//                     child: Image.network(item,
-//                         fit: BoxFit.cover, width: 500),
-//                   ),
-//                 ))
-//                     .toList(),
-//               ),
-//               Text(
-//                 'Received successfully from',
-//                 style: TextStyle(
-//                   fontSize: 16,
-//                 ),
-//                 textAlign: TextAlign.center,
-//               ),
-//               Text(
-//                 '${tripDetails.userName}',
-//                 style: TextStyle(
-//                   fontSize: 20,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//                 textAlign: TextAlign.center,
-//               ),
-//               SizedBox(height: 16),
-//               Text(
-//                 'Rate User',
-//                 style: TextStyle(
-//                   fontSize: 18,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//                 textAlign: TextAlign.center,
-//               ),
-//               SizedBox(height: 8),
-//               RatingBar.builder(
-//                 initialRating: 3,
-//                 minRating: 1,
-//                 direction: Axis.horizontal,
-//                 allowHalfRating: true,
-//                 itemCount: 5,
-//                 itemPadding: EdgeInsets.symmetric(horizontal: 4.0),
-//                 itemBuilder: (context, _) => Icon(
-//                   Icons.star,
-//                   color: Colors.blue,
-//                 ),
-//                 onRatingUpdate: (rating) {
-//                   print(rating);
-//                 },
-//               ),
-//               SizedBox(height: 24),
-//               Text(
-//                 'Booking Details',
-//                 style: TextStyle(
-//                   fontSize: 18,
-//                   fontWeight: FontWeight.bold,
-//                 ),
-//               ),
-//               SizedBox(height: 8),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Text('Destinations'),
-//                   Text('${tripDetails.tripName}'),
-//                 ],
-//               ),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Text('Time Taken'),
-//                   Text('${tripDetails.startingDate}'),
-//                 ],
-//               ),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Text('Distance'),
-//                   Text('${tripDetails.cost} KM'),
-//                 ],
-//               ),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                 children: [
-//                   Text('Payment Mode'),
-//                   Text('Credit Card'),
-//                 ],
-//               ),
-//               SizedBox(height: 16),
-//               TextField(
-//                 decoration: InputDecoration(
-//                   border: OutlineInputBorder(),
-//                   labelText: 'Provide your feedback regarding customer',
-//                 ),
-//                 maxLines: 3,
-//               ),
-//               SizedBox(height: 16),
-//               ElevatedButton(
-//                 onPressed: () {
-//                   // Handle continue button press
-//                 },
-//                 child: Text('CONTINUE'),
-//               ),
-//               SizedBox(height: 24),
-//
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

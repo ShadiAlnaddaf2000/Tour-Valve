@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tour_valve/shared/services/remote/end_points.dart';
 
 import '../cubits/main_screen_cubit/main_screen_cubit.dart';
+import '../shared/style/colors.dart';
 
 class MainScreen extends StatelessWidget {
   const MainScreen({super.key});
@@ -10,125 +12,269 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buildHeader(),
-              const SizedBox(height: 16),
-              buildSearchBox(),
-              const SizedBox(height: 32),
-              buildSectionTitle('Our Tour'),
-              BlocBuilder<TripCubit, MainScreenState>(
-                builder: (context, state) {
-                  if (state is TripInitialState) {
-                    BlocProvider.of<TripCubit>(context).submitTrip();
-                  }
-                  if (state is TripLoadingState) {
-                    return const CircularProgressIndicator();
-                  }
-                  if (state is TripSuccessState) {
-                    return buildHorizontalList(state.trip.map(
-                      (e) {
-                        return InkWell(
-                          onTap: (){
-                            context.push('/tripDetails',extra: e);
-                          },
-                          child: TripCard(
+      child: RefreshIndicator(
+        onRefresh: () async {
+          // Call your refresh logic here
+          BlocProvider.of<TripCubit>(context).submitTrip();
+          BlocProvider.of<CountryCubit>(context).submitCountry();
+          BlocProvider.of<CityCubit>(context).submitCity();
+          BlocProvider.of<HotelCubit>(context).submitHotel();
+          BlocProvider.of<RestaurantCubit>(context).submitRestaurant();
+          BlocProvider.of<CompaniesCubit>(context).submitCompanies();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          // Ensure scroll physics allows for pull-to-refresh
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildHeader(),
+                const SizedBox(height: 16),
+                buildSearchBox(),
+                const SizedBox(height: 32),
+                buildSectionTitle('Our Tour'),
+                BlocBuilder<TripCubit, MainScreenState>(
+                  builder: (context, state) {
+                    if (state is TripInitialState) {
+                      BlocProvider.of<TripCubit>(context).submitTrip();
+                    }
+                    if (state is TripLoadingState) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is TripSuccessState) {
+                      return buildHorizontalList(state.trip.map(
+                        (e) {
+                          return InkWell(
+                            onTap: () {
+                              context.push('/tripDetails', extra: e);
+                            },
+                            child: TripCard(
+                              imagePath: e.imgs!.first,
+                              tripName: e.tripName ?? '',
+                              cost: '${e.cost}',
+                            ),
+                          );
+                        },
+                      ).toList());
+                    }
+                    if (state is TripErrorState) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          BlocProvider.of<TripCubit>(context).submitTrip();
+                        },
+                        child: const Text('Retry'),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+                const SizedBox(height: 16),
+                buildSectionTitle('Countries'),
+                BlocBuilder<CountryCubit, MainScreenState>(
+                  builder: (context, state) {
+                    if (state is CountryInitialState) {
+                      BlocProvider.of<CountryCubit>(context).submitCountry();
+                    }
+                    if (state is CountryLoadingState) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is CountrySuccessState) {
+                      return buildHorizontalList(state.cities.map(
+                        (e) {
+                          return CountryCard(
                             imagePath: e.imgs!.first,
-                            tripName: e.tripName ?? '',
-                            startDate: 'from ${e.tripName}',
-                            endDate: 'to ${e.endingDate}',
-                            cost: '${e.cost}',
-                          ),
-                        );
-                      },
-                    ).toList());
-                  }
-
-                  if (state is CountryErrorState) {
-                    return ElevatedButton(
-                      onPressed: () {
-                        BlocProvider.of<CountryCubit>(context).submitCountry();
-                      },
-                      child: const Text('re'),
-                    );
-                  }
-                  return const SizedBox();
-                },
-              ),
-              const SizedBox(
-                height: 16,
-              ),
-              buildSectionTitle('popular places'),
-              const SizedBox(height: 16),
-              BlocBuilder<CountryCubit, MainScreenState>(
-                builder: (context, state) {
-                  if (state is CountryInitialState) {
-                    BlocProvider.of<CountryCubit>(context).submitCountry();
-                  }
-                  if (state is CountryLoadingState) {
-                    return const CircularProgressIndicator();
-                  }
-                  if (state is CountrySuccessState) {
-                    return buildHorizontalList(state.cities.map(
-                      (e) {
-                        return DestinationCard(
-                          imagePath: e.imgs!.first,
-                          location: e.name ?? '',
-                        );
-                      },
-                    ).toList());
-                  }
-
-                  if (state is CountryErrorState) {
-                    return ElevatedButton(
-                      onPressed: () {
-                        BlocProvider.of<CountryCubit>(context).submitCountry();
-                      },
-                      child: const Text('re'),
-                    );
-                  }
-                  return const SizedBox();
-                },
-              ),
-              const SizedBox(height: 32),
-              buildSectionTitle('popular hotels'),
-              const SizedBox(height: 16),
-              BlocBuilder<HotelCubit, MainScreenState>(
-                builder: (context, state) {
-                  if (state is HotelInitialState) {
-                    BlocProvider.of<HotelCubit>(context).submitHotel();
-                  }
-                  if (state is HotelLoadingState) {
-                    return const CircularProgressIndicator();
-                  }
-                  if (state is HotelSuccessState) {
-                    return buildHorizontalList(state.hotel.map(
-                      (e) {
-                        return HotelCard(
-                          imagePath: e.imgs!.first,
-                          hotelName: e.name!,
-                          price: e.cityName!,
-                        );
-                      },
-                    ).toList());
-                  }
-
-                  if (state is HotelErrorState) {
-                    return ElevatedButton(
-                      onPressed: () {
-                        BlocProvider.of<HotelCubit>(context).submitHotel();
-                      },
-                      child: const Text('re'),
-                    );
-                  }
-                  return const SizedBox();
-                },
-              ),
-            ],
+                            location: e.name ?? '',
+                          );
+                        },
+                      ).toList());
+                    }
+                    if (state is CountryErrorState) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          BlocProvider.of<CountryCubit>(context)
+                              .submitCountry();
+                        },
+                        child: const Text('Retry'),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+                const SizedBox(height: 16),
+                buildSectionTitle('Cities'),
+                BlocBuilder<CityCubit, MainScreenState>(
+                  builder: (context, state) {
+                    if (state is CityInitialState) {
+                      BlocProvider.of<CityCubit>(context).submitCity();
+                    }
+                    if (state is CityLoadingState) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is CitySuccessState) {
+                      return buildHorizontalList(state.cities.map(
+                        (e) {
+                          return CityCard(
+                            imagePath: e.imgs!.first,
+                            cityName: e.name!,
+                            countryName: e.countryName!,
+                          );
+                        },
+                      ).toList());
+                    }
+                    if (state is CityErrorState) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          BlocProvider.of<CityCubit>(context).submitCity();
+                        },
+                        child: const Text('Retry'),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                buildSectionTitle('Hotels'),
+                const SizedBox(height: 16),
+                BlocBuilder<HotelCubit, MainScreenState>(
+                  builder: (context, state) {
+                    if (state is HotelInitialState) {
+                      BlocProvider.of<HotelCubit>(context).submitHotel();
+                    }
+                    if (state is HotelLoadingState) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is HotelSuccessState) {
+                      return buildHorizontalList(state.hotel.map(
+                        (e) {
+                          return HotelCard(
+                            imagePath: e.imgs!.first,
+                            hotelName: e.name!,
+                            cityName: 'Hotel in ${e.cityName}',
+                          );
+                        },
+                      ).toList());
+                    }
+                    if (state is HotelErrorState) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          BlocProvider.of<HotelCubit>(context).submitHotel();
+                        },
+                        child: const Text('Retry'),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+                const SizedBox(height: 16),
+                buildSectionTitle('Restaurant'),
+                const SizedBox(height: 16),
+                BlocBuilder<RestaurantCubit, MainScreenState>(
+                  builder: (context, state) {
+                    if (state is RestaurantInitialState) {
+                      BlocProvider.of<RestaurantCubit>(context)
+                          .submitRestaurant();
+                    }
+                    if (state is RestaurantLoadingState) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is RestaurantSuccessState) {
+                      return buildHorizontalList(state.restaurant.map(
+                        (e) {
+                          return RestaurantCard(
+                            imagePath: e.imgs!.first,
+                            restaurantName: e.name!,
+                            cityName: e.cityName!,
+                          );
+                        },
+                      ).toList());
+                    }
+                    if (state is HotelErrorState) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          BlocProvider.of<HotelCubit>(context).submitHotel();
+                        },
+                        child: const Text('Retry'),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+                const SizedBox(height: 16),
+                buildSectionTitle('Facilities'),
+                const SizedBox(height: 16),
+                BlocBuilder<FacilitiesCubit, MainScreenState>(
+                  builder: (context, state) {
+                    if (state is FacilitiesInitialState) {
+                      BlocProvider.of<FacilitiesCubit>(context)
+                          .submitFacilities();
+                    }
+                    if (state is FacilitiesLoadingState) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is FacilitiesSuccessState) {
+                      return buildHorizontalList(state.facility.map(
+                        (e) {
+                          return RestaurantCard(
+                            imagePath: '${Urls.domain}${e.imgs!.first}',
+                            restaurantName: e.name!,
+                            cityName: e.cityName!,
+                          );
+                        },
+                      ).toList());
+                    }
+                    if (state is RestaurantErrorState) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          BlocProvider.of<RestaurantCubit>(context)
+                              .submitRestaurant();
+                        },
+                        child: const Text('Retry'),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+                const SizedBox(height: 16),
+                buildSectionTitle('Transport Companies'),
+                const SizedBox(height: 16),
+                BlocBuilder<CompaniesCubit, MainScreenState>(
+                  builder: (context, state) {
+                    if (state is CompaniesInitialState) {
+                      BlocProvider.of<CompaniesCubit>(context)
+                          .submitCompanies();
+                    }
+                    if (state is CompaniesLoadingState) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (state is CompaniesSuccessState) {
+                      return buildHorizontalList(state.company.map(
+                        (e) {
+                          return RestaurantCard(
+                            imagePath: '${e.imgs!.first}',
+                            restaurantName: e.name!,
+                            cityName: 'Cost ${e.price}',
+                          );
+                        },
+                      ).toList());
+                    }
+                    if (state is CompaniesErrorState) {
+                      return ElevatedButton(
+                        onPressed: () {
+                          BlocProvider.of<CompaniesCubit>(context)
+                              .submitCompanies();
+                        },
+                        child: const Text('Retry'),
+                      );
+                    }
+                    return const SizedBox();
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -136,16 +282,18 @@ class MainScreen extends StatelessWidget {
   }
 
   Widget buildHeader() {
-    return Text(
-      'We are here for your convenience',
-      style: TextStyle(
-        fontFamily: 'Poppins', // Use the family name specified in pubspec.yaml
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: Colors.blue[900],
+    return Center(
+      child: Text(
+        'We are here for your convenience',
+        style: TextStyle(
+          fontFamily: 'Poppins',
+          fontSize: 20,
+          fontWeight: FontWeight.bold,
+          color: Colors.blue[900],
+        ),
+        textAlign: TextAlign.center,
+        maxLines: 2,
       ),
-      textAlign: TextAlign.center,
-      maxLines: 2, // Limit text to 2 lines
     );
   }
 
@@ -156,16 +304,20 @@ class MainScreen extends StatelessWidget {
         height: 49,
         child: TextField(
           decoration: InputDecoration(
-            hintText: ' search',
+            hintText: 'Search',
             prefixIcon: ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
-                      colors: MyColors.colorList, // Define gradient colors
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ).createShader(bounds),
-                child: const Icon(Icons.search)),
+              shaderCallback: (bounds) => const LinearGradient(
+                colors: MyColors.colorList,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ).createShader(bounds),
+              child: const Icon(Icons.search, color: Colors.white),
+            ),
+            filled: true,
+            fillColor: Colors.white,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(50),
+              borderSide: BorderSide.none,
             ),
           ),
         ),
@@ -196,27 +348,23 @@ class MainScreen extends StatelessWidget {
   }
 }
 
-class FavoritesPage extends StatelessWidget {
-  const FavoritesPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Favorites Page'),
-    );
-  }
-}
-
-class DestinationCard extends StatelessWidget {
+class CountryCard extends StatelessWidget {
   final String imagePath;
   final String location;
 
-  const DestinationCard(
-      {super.key, required this.imagePath, required this.location});
+  const CountryCard({
+    super.key,
+    required this.imagePath,
+    required this.location,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: SizedBox(
         width: 150,
         height: 200,
@@ -226,7 +374,7 @@ class DestinationCard extends StatelessWidget {
             Expanded(
               child: ClipRRect(
                 borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(4)),
+                    const BorderRadius.vertical(top: Radius.circular(15)),
                 child: Image.network(
                   imagePath,
                   width: double.infinity,
@@ -239,7 +387,144 @@ class DestinationCard extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 location,
-                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class CityCard extends StatelessWidget {
+  final String imagePath;
+  final String cityName;
+  final String countryName;
+
+  const CityCard({
+    super.key,
+    required this.imagePath,
+    required this.cityName,
+    required this.countryName,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: SizedBox(
+        width: 150,
+        height: 200,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(15)),
+                child: Image.network(
+                  imagePath,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                cityName,
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                countryName,
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TripCard extends StatelessWidget {
+  final String imagePath;
+  final String tripName;
+  final String cost;
+
+  const TripCard({
+    super.key,
+    required this.imagePath,
+    required this.tripName,
+    required this.cost,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: SizedBox(
+        width: 250,
+        height: 300,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius:
+                    const BorderRadius.vertical(top: Radius.circular(15)),
+                child: Image.network(
+                  imagePath,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                tripName,
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Cost: $cost',
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
               ),
             ),
           ],
@@ -252,17 +537,22 @@ class DestinationCard extends StatelessWidget {
 class HotelCard extends StatelessWidget {
   final String imagePath;
   final String hotelName;
-  final String price;
+  final String cityName;
 
-  const HotelCard(
-      {super.key,
-      required this.imagePath,
-      required this.hotelName,
-      required this.price});
+  const HotelCard({
+    super.key,
+    required this.imagePath,
+    required this.hotelName,
+    required this.cityName,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: SizedBox(
         width: 150,
         height: 200,
@@ -272,7 +562,7 @@ class HotelCard extends StatelessWidget {
             Expanded(
               child: ClipRRect(
                 borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(4)),
+                    const BorderRadius.vertical(top: Radius.circular(15)),
                 child: Image.network(
                   imagePath,
                   width: double.infinity,
@@ -287,13 +577,21 @@ class HotelCard extends StatelessWidget {
                 hotelName,
                 style: const TextStyle(
                   fontFamily: 'Poppins',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Text(price),
+              child: Text(
+                cityName,
+                style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
             ),
           ],
         ),
@@ -302,34 +600,35 @@ class HotelCard extends StatelessWidget {
   }
 }
 
-class TripCard extends StatelessWidget {
+class RestaurantCard extends StatelessWidget {
   final String imagePath;
-  final String tripName;
-  final String startDate;
-  final String endDate;
-  final String cost;
+  final String restaurantName;
+  final String cityName;
 
-  const TripCard(
-      {super.key,
-      required this.imagePath,
-      required this.tripName,
-      required this.startDate,
-      required this.endDate,
-      required this.cost});
+  const RestaurantCard({
+    super.key,
+    required this.imagePath,
+    required this.restaurantName,
+    required this.cityName,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
       child: SizedBox(
-        height: 500,
-        width: 200,
+        width: 150,
+        height: 200,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: ClipRRect(
                 borderRadius:
-                    const BorderRadius.vertical(top: Radius.circular(4)),
+                    const BorderRadius.vertical(top: Radius.circular(15)),
                 child: Image.network(
                   imagePath,
                   width: double.infinity,
@@ -339,46 +638,30 @@ class TripCard extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(2.0),
+              padding: const EdgeInsets.all(8.0),
               child: Text(
-                tripName,
+                restaurantName,
                 style: const TextStyle(
                   fontFamily: 'Poppins',
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold,
                 ),
-                textAlign: TextAlign.center,
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(2.0),
+              padding: const EdgeInsets.all(8.0),
               child: Text(
-                'from $startDate',
+                cityName,
                 style: const TextStyle(
                   fontFamily: 'Poppins',
+                  fontSize: 14,
+                  fontWeight: FontWeight.normal,
                 ),
-                textAlign: TextAlign.center,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Text(
-                'to $endDate',
-                style: const TextStyle(
-                  fontFamily: 'Poppins',
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Text(cost),
             ),
           ],
         ),
       ),
     );
   }
-}
-
-class MyColors {
-  static const List<Color> colorList = [Colors.blue, Colors.red];
 }

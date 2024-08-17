@@ -38,7 +38,21 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (BuildContext context) => UserProfileCubit(),
         ),
-        BlocProvider(create: (BuildContext context) => MyBookingCubit()),
+        BlocProvider(
+          create: (BuildContext context) => MyBookingCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => CityCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => RestaurantCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => CompaniesCubit(),
+        ),
+        BlocProvider(
+          create: (BuildContext context) => FacilitiesCubit(),
+        ),
       ],
       child: MaterialApp.router(
         debugShowCheckedModeBanner: false,
